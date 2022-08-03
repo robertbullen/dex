@@ -1,0 +1,36 @@
+{
+	"name": "dex",
+	"version": "1.0.0",
+	"main": "dex.mjs",
+	"license": "MIT",
+	"dependencies": {
+		"@apidevtools/json-schema-ref-parser": "^9.0.9",
+		"ajv": "^8.11.0",
+		"ajv-formats": "^2.1.1",
+		"angular-expressions": "^1.1.5",
+		"capital-case": "^1.0.4",
+		"convert-svg-to-png": "^0.6.4",
+		"dayjs": "^1.11.1",
+		"docxtemplater": "^3.29.2",
+		"graphviz": "https://github.com/robertbullen/node-graphviz",
+		"linq": "^4.0.0",
+		"lodash-es": "^4.17.21",
+		"lower-case": "^2.0.2",
+		"open": "^8.4.0",
+		"pizzip": "^3.1.1",
+		"puppeteer": "^15.5.0",
+		"safe-stable-stringify": "^2.3.1",
+		"typescript-json-schema": "^0.53.1",
+		"upper-case": "^2.0.2",
+		"xml2js": "^0.4.23",
+		"yargs": "^17.4.1",
+		"yargs-interactive": "^3.0.1"
+	},
+	"resolutions": {
+		"puppeteer": "^15.5.0"
+	},
+	"scripts": {
+		"build": "./src/scripts/generate-json-schemas.mjs"
+	},
+	"type": "module"
+}

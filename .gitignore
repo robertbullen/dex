@@ -1,0 +1,9 @@
+/.vscode/
+/data/
+/local/
+/node_modules/
+/src/schemas/
+
+.DS_Store
+~$*.pptx
+yarn-error.log
