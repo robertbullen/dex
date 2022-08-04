@@ -15,7 +15,7 @@ export async function updateGvosUpgradePathImage(data, replaceImage) {
 	//     height: 4.5,
 	//     width: 11.98,
 	// };
-	const oldImageMd5 = 'a264d044eeea007ced6b3c155fbc67d1';
+	const oldImageMd5 = '4d7d87e247962f2474efd5e2dc8651cf';
 	const tableSelector = '#mc-main-content > table';
 	const upgradePathPageUrl =
 		'https://docs.gigamon.com/doclib516/Content/GV-OS-Upgrade/Upgrade_Summary_Path___Standalone_Nodes.html';

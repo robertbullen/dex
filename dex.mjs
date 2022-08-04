@@ -121,14 +121,14 @@ async function main() {
 	}
 
 	replaceImage({
-		newImageBuffer: gigamonOrgChart.svgImageBuffer,
-		oldImageExtension: 'svg',
-		oldImageMd5: '7b2fa5e5c29d7ef609fcba48107d1701',
+		newImageBuffer: gigamonOrgChart.pngImageBuffer,
+		oldImageExtension: 'png',
+		oldImageMd5: '806d699051334f4bb806bd8584979894',
 	});
 	replaceImage({
-		oldImageMd5: 'd835197c255e2dc8aef259907ea9155a',
-		oldImageExtension: 'svg',
-		newImageBuffer: customerOrgChart.svgImageBuffer,
+		oldImageMd5: '4ee110e505b11ef1ca5f98fabebe8e2f',
+		oldImageExtension: 'png',
+		newImageBuffer: customerOrgChart.pngImageBuffer,
 	});
 
 	await updateGvosUpgradePathImage(data, replaceImage);
