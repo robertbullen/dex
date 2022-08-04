@@ -1,9 +1,10 @@
 /.vscode/
-/data/
 /local/
 /node_modules/
 /src/schemas/
 
+/data
+/templates
 .DS_Store
 ~$*.pptx
 yarn-error.log
