@@ -1,14 +1,3 @@
-interface BlockStyles {
-	backgroundColor: string;
-	borderColor: string;
-	borderWidth?: number;
-	fontFamily: string;
-	fontWeight?: 'bold' | 'normal';
-	shape?: 'rectangle' | 'rounded-rectangle';
-	textColor: string;
-	textTransform?: 'lowercase' | 'uppercase';
-}
-
 interface Case<T extends JsonSchemaTarget = 'validator'> extends OptionalNotes, OptionalUrls {
 	contact: ReferenceOr<Person<T>>;
 
@@ -32,10 +21,9 @@ type CaseStatus = 'closed' | 'open' | 'resolved';
 /**
  * This is an internal type. Use `DataModelEditor` or `DataModel` instead.
  */
-interface DataModelType<T extends JsonSchemaTarget = 'validator'>
-	extends OrgChartOrganizationType<T> {
+interface DataModelType<T extends JsonSchemaTarget = 'validator'> extends OrganizationType<T> {
 	cases: Case<T>[];
-	gigamon: T extends 'editor' ? never : OrgChartOrganizationType<T>;
+	gigamon: T extends 'editor' ? never : OrganizationType<T>;
 	locations: Location[];
 	meeting: Meeting<T>;
 	notableDates: {
@@ -47,7 +35,7 @@ interface DataModelType<T extends JsonSchemaTarget = 'validator'>
 		// This is an arbitrary string to allow freeform text such as "The third Thursday in December".
 		fiscalCalendar: string;
 	};
-	partners: Organization<T>[];
+	partners: OrganizationType<T>[];
 	// portfolioHeatMap: HeatMap<'cloud' | 'core' | 'threatInsight'>;
 	products: Product[];
 	projects: Project[];
@@ -59,11 +47,6 @@ interface DataModelType<T extends JsonSchemaTarget = 'validator'>
 
 type DataModelEditor = DataModelType<'editor'>;
 type DataModel = DataModelType<'validator'>;
-
-interface EdgeStyles {
-	lineColor: string;
-	lineWidth?: number;
-}
 
 type HeatMap<T extends PropertyKey> = Record<T, HeatMapValue>;
 
@@ -123,29 +106,14 @@ interface OptionalUrls {
 	}[];
 }
 
-interface Organization<T extends JsonSchemaTarget = 'validator'> {
+interface OrganizationType<T extends JsonSchemaTarget = 'validator'> {
 	orgName: string;
 	people?: PeopleDictionary<T>;
 	staff: StaffMember<T>[];
 }
 
-interface OrgChartOrganizationType<T extends JsonSchemaTarget = 'validator'>
-	extends Organization<T> {
-	orgChartStyles: OrgChartStyles;
-}
-
-type OrgChartOrganizationEditor = OrgChartOrganizationType<'editor'>;
-type OrgChartOrganization = OrgChartOrganizationType<'validator'>;
-
-interface OrgChartStyles {
-	edges: EdgeStyles;
-	graph: BlockStyles;
-	nodes: {
-		accent: BlockStyles;
-		default: BlockStyles;
-	};
-	subgraphs: BlockStyles;
-}
+type OrganizationEditor = OrganizationType<'editor'>;
+type Organization = OrganizationType<'validator'>;
 
 type PeopleDictionary<T extends JsonSchemaTarget = 'validator'> = Record<string, Person<T>>;
 

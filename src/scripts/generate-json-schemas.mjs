@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 const schemaParams = [
 	// ['DataModel', 'validator'],
 	['DataModelEditor', 'editor'],
-	['OrgChartOrganizationEditor', 'editor'],
+	['OrganizationEditor', 'editor'],
 ];
 
 const dstDirPath = path.resolve(__dirname, '../schemas');
