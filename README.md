@@ -2,6 +2,16 @@
 
 ## Initialization
 
+### TLDR
+
+For non-developers, you can get started using this project quickly by running the following command at the terminal, which downloads and executes the [src/scripts/init.sh](src/scripts/init.sh) script:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/robertbullen/dex/master/src/scripts/init.sh)"
+```
+
+### Details
+
 These dependencies must be installed on the system:
 
 | Dependency | Installation | Notes |
@@ -17,7 +27,12 @@ Prior to the first invocation, install all JavaScript packages with this command
 yarn install
 ```
 
-All of this can be accomplished quickly and easily by running the [src/scripts/init.sh](src/scripts/init.sh) script.
+If you would like live YAML validation support in Visual Studio Code, install the [YAML Language Support by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) extension, and then generate JSON schemas with this command:
+
+```bash
+# From the root directory of this project:
+yarn build
+```
 
 ## Usage
 

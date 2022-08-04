@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Install system dependencies via Homebrew, installing Homebrew first if necessary, and silencing
 # "already installed" package warnings.
@@ -8,7 +8,6 @@ brew install --quiet git graphviz node yarn
 # Download the project from Github, install project dependencies, and perform an initial build.
 git clone https://github.com/robertbullen/dex.git
 
-pushd dex
+cd dex
 yarn install
 yarn build
-popd
