@@ -72,7 +72,7 @@ Options:
 ### Example
 
 ```bash
-./dex.mjs --template-file=templates/template.pptx --data-dir=data/patterson-companies --output-dir=local/output --preview
+./dex.mjs --template-file=templates/template.pptx --data-dir=data/patterson-companies --output-dir=local/output --review
 ```
 
 ## Educational Links
@@ -80,41 +80,3 @@ Options:
 -   [Docxtemplater](https://docxtemplater.com/docs/get-started-node/) is the main library powering this utility. It has a free core component and several for-purchase [plugin modules](https://docxtemplater.com/pricing/) available should the need arise. They're expensive enough that they're being avoided for this PoC.
 -   [OOXML Hacking: Editing in macOS](https://www.brandwares.com/bestpractices/2015/11/xml-hacking-editing-in-os-x/) explains how to spelunk around a PowerPoint presentation. (PPTX files are really just zipped directories of XML content and assets, so it is possible to unzip the PPTX, search and replace, and then rezip.)
 -   [OfficeTalk: Essentials of the Open Packaging Conventions](<https://docs.microsoft.com/en-us/previous-versions/office/office-12/ee361919(v=office.12)>) - This is an old document but it explains the fundamentals of an Open Package, which is what Office documents are, and is still relevant.
-
-## Ideas
-
--   [ ] Slide showing all GTI integrations
--   [ ] Show Portfolio Status slide, which elaborates on our three product pillars and their presence at the customer
-
-    ```yaml
-    # Possible data model
-    portfolioHeatMap:
-        core:
-            color: yellow
-            notes:
-                - One
-                - Two
-                - Three
-
-        cloud:
-            color: yellow
-            notes:
-                - Private cloud visibility unknown
-                - GigaVUE-VM scheduled for end-of-support
-                - V Series presentation cancelled
-                - Public cloud visibility unknown
-
-        threatInsight:
-            color: red
-            notes:
-                - ThreatINSIGHT hasn't been explored at Ecolab
-    ```
-
--   [ ] Present deployments on the OSI-like architecture diagram, highlighting the parts that the customer owns
--   [ ] Present locations/sites in tabular format, possibly with the following columns:
-
-    | Site Name     | Site Location   | Site Host    | Using Gigamon |
-    | ------------- | --------------- | ------------ | ------------- |
-    | Data Center 1 | Chicago, IL     | Sunguard     | Yes           |
-    | Data Center 2 | Minneapolis, MN | Self-Managed | Yes           |
-    | Branch A      | Duluth, MN      | Self-Managed | No            |
