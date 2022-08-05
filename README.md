@@ -1,14 +1,26 @@
 # dex
 
+Think of it sort of like [Handlebars](https://handlebarsjs.com/) for PowerPoint.
+
+- [dex](#dex)
+  - [Initialization](#initialization)
+    - [TL;DR](#tldr)
+    - [Details](#details)
+  - [Usage](#usage)
+    - [Example](#example)
+  - [Educational Links](#educational-links)
+
 ## Initialization
 
-### TLDR
+### TL;DR
 
-For non-developers, you can get started using this project quickly by running the following command at the terminal, which downloads and executes the [src/scripts/init.sh](src/scripts/init.sh) script:
+For non-developers, you can get your environment set up quickly by running the following command at the terminal, which downloads and executes the [src/scripts/init.sh](src/scripts/init.sh) script:
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/robertbullen/dex/master/src/scripts/init.sh)"
 ```
+
+Essentially, this performs all the critical steps in the following section.
 
 ### Details
 
