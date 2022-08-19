@@ -14,7 +14,7 @@ import { loadDataFromFileSystem } from './src/data.mjs';
 import { generateJsonSchema } from './src/json-schema.mjs';
 import { generateOrgChart } from './src/org-chart.mjs';
 import { generatePowerpoint } from './src/powerpoint.mjs';
-import { getReport } from './src/reports.mjs';
+// import { getReport } from './src/reports.mjs';
 import { updateGvosUpgradePathImage } from './src/slides/gvos-upgrade-path.mjs';
 
 async function main() {
@@ -22,7 +22,7 @@ async function main() {
 
 	const experiment = false;
 	if (experiment) {
-		await getReport(args);
+		// await getReport(args);
 	}
 
 	// Load customer data.
@@ -152,11 +152,26 @@ function parseArguments() {
 	return yargs
 		.help()
 		.usage(
-			'Usage: $0 -t=<path/to/template.pptx> -d=<path/to/data.yaml> -o=<path/to/output/dir/> [-m=<yyyy-mm-dd>] [-r] [-s] [-u=<username>] [-p=<password>]',
+			[
+				'Usage: $0',
+				'-t=<path/to/template.pptx>',
+				'-d=<path/to/data.yaml>',
+				'-o=<path/to/output/dir/>',
+				'[-m=<yyyy-mm-dd>]',
+				'[-r] ',
+				'[-s] ',
+				// '[-u=<username>] ',
+				// '[-p=<password>]',
+			].join(' '),
 		)
 		.interactive({
 			// Prompt the user for these arguments if they aren't supplied.
-			'interactive': { default: true },
+			'interactive': {
+				default: true,
+				// TODO: Ideally this would hide the option from the help output, but it doesn't.
+				// Figure out another way.
+				hidden: true,
+			},
 			'meeting-date': {
 				alias: 'm',
 				describe:
@@ -165,20 +180,20 @@ function parseArguments() {
 				prompt: /** @type {'if-empty'} */ ('if-empty'),
 				type: 'string',
 			},
-			'password': {
-				alias: 'p',
-				describe: 'The password to use when logging into Salesforce.',
-				group: 'Interactive Arguments',
-				prompt: /** @type {'if-empty'} */ ('if-empty'),
-				type: 'password',
-			},
-			'username': {
-				alias: 'u',
-				describe: 'The username to use when logging into Salesforce.',
-				group: 'Interactive Arguments',
-				prompt: /** @type {'if-empty'} */ ('if-empty'),
-				type: 'string',
-			},
+			// 'password': {
+			// 	alias: 'p',
+			// 	describe: 'The password to use when logging into Salesforce.',
+			// 	group: 'Interactive Arguments',
+			// 	prompt: /** @type {'if-empty'} */ ('if-empty'),
+			// 	type: 'password',
+			// },
+			// 'username': {
+			// 	alias: 'u',
+			// 	describe: 'The username to use when logging into Salesforce.',
+			// 	group: 'Interactive Arguments',
+			// 	prompt: /** @type {'if-empty'} */ ('if-empty'),
+			// 	type: 'string',
+			// },
 
 			// Don't prompt the user for these arguments.
 			'data-path': {

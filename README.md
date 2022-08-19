@@ -52,18 +52,13 @@ Subsequent invocations can invoke the script directly:
 
 ```plaintext
 Usage: dex.mjs -t=<path/to/template.pptx> -d=<path/to/data.yaml>
--o=<path/to/output/dir/> [-m=<yyyy-mm-dd>] [-r] [-s] [-u=<username>]
-[-p=<password>]
+-o=<path/to/output/dir/> [-m=<yyyy-mm-dd>] [-r]  [-s]
 
-Options:
-  --version              Show version number                           [boolean]
-  --help                 Show help                                     [boolean]
-  --interactive                                                  [default: true]
-  --meeting-date, -m     The date when the meeting will take place, specified in
-                         yyyy-mm-dd format.                             [string]
-  --username, -u         The username to use when logging into Salesforce.
-                                                                        [string]
-  --password, -p         The password to use when logging into Salesforce.
+Interactive Arguments
+  --meeting-date, -m  The date when the meeting will take place, specified in
+                      yyyy-mm-dd format.                                [string]
+
+Noninteractive Arguments
   --data-path, -d        File or directory path containing the customer data to
                          substitute into the template PowerPoint slide deck.
                          When a directory is specified, all JSON, YAML, and
@@ -79,12 +74,16 @@ Options:
                                                       [boolean] [default: false]
   --template-file, -t    File path to a template PowerPoint slide deck.
                                                              [string] [required]
+
+Options:
+  --version      Show version number                                   [boolean]
+  --help         Show help                                             [boolean]
 ```
 
 ### Example
 
 ```bash
-./dex.mjs --template-file=templates/template.pptx --data-dir=data/patterson-companies --output-dir=local/output --review
+./dex.mjs --template-file=template.pptx --data-path=data.yaml --output-dir=output --review
 ```
 
 ## Educational Links
