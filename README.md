@@ -1,36 +1,44 @@
 # dex
 
-Think of it sort of like [Handlebars](https://handlebarsjs.com/) for PowerPoint.
+This project implements a proof-of-concept for dynamically populating PowerPoint templates with data. Think of it sort of like [Handlebars](https://handlebarsjs.com/) for PowerPoint.
 
-- [dex](#dex)
-  - [Initialization](#initialization)
-    - [TL;DR](#tldr)
-    - [Details](#details)
-  - [Usage](#usage)
-    - [Example](#example)
-  - [Educational Links](#educational-links)
+-   [dex](#dex)
+    -   [Initialization](#initialization)
+        -   [TL;DR](#tldr)
+        -   [Details](#details)
+            -   [macOS System Dependencies](#macos-system-dependencies)
+            -   [JavaScript Packages](#javascript-packages)
+            -   [Visual Studio Code Extensions](#visual-studio-code-extensions)
+    -   [Usage](#usage)
+        -   [Example](#example)
+    -   [Educational Links](#educational-links)
 
 ## Initialization
 
 ### TL;DR
 
-For non-developers, you can get your environment set up quickly by running the following command at the terminal, which downloads and executes the [src/scripts/init.sh](src/scripts/init.sh) script:
+For non-developers, you can get your macOS system set up very simply by running the following command at the terminal:
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/robertbullen/dex/master/src/scripts/init.sh)"
 ```
 
-Essentially, this performs all the critical steps in the following section.
+The command downloads and executes the [src/scripts/init.sh](src/scripts/init.sh) script, which then performs all the critical steps in the following section plus downloading this Github project into its own `dex` directory.
 
 ### Details
+
+#### macOS System Dependencies
 
 These dependencies must be installed on the system:
 
 | Dependency | Installation | Notes |
 | --- | --- | --- |
+| [Homebrew](https://brew.sh) | See [website](https://brew.sh). | Used for macOS dependency management. |
 | [Node.js](https://nodejs.org/) | `brew install node` | This is a JavaScript project and Node.js is the runtime used to execute it. |
 | [Yarn](https://yarnpkg.com/) | `brew install yarn` | Yarn is a JavaScript dependency manager. |
 | [Graphviz](https://graphviz.org/) | `brew install graphviz` | Graphviz is used to generate the org charts. |
+
+#### JavaScript Packages
 
 Prior to the first invocation, install all JavaScript packages with this command:
 
@@ -38,6 +46,8 @@ Prior to the first invocation, install all JavaScript packages with this command
 # From the root directory of this project:
 yarn install
 ```
+
+#### Visual Studio Code Extensions
 
 If you would like live YAML validation support in Visual Studio Code, install the [YAML Language Support by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) extension, and then generate JSON schemas with this command:
 
