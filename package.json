@@ -12,6 +12,7 @@
 		"convert-svg-to-png": "^0.6.4",
 		"dayjs": "^1.11.1",
 		"docxtemplater": "^3.29.2",
+		"filenamify": "^5.1.1",
 		"graphviz": "https://github.com/robertbullen/node-graphviz",
 		"linq": "^4.0.0",
 		"lodash-es": "^4.17.21",

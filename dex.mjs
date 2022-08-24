@@ -3,8 +3,9 @@
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import dayjs from 'dayjs';
-import * as fs from 'fs/promises';
+import filenamify from 'filenamify';
 import { existsSync } from 'fs';
+import * as fs from 'fs/promises';
 import open from 'open';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -14,8 +15,8 @@ import { loadDataFromFileSystem } from './src/data.mjs';
 import { generateJsonSchema } from './src/json-schema.mjs';
 import { generateOrgChart } from './src/org-chart.mjs';
 import { generatePowerpoint } from './src/powerpoint.mjs';
-// import { getReport } from './src/reports.mjs';
 import { updateGvosUpgradePathImage } from './src/slides/gvos-upgrade-path.mjs';
+// import { getReport } from './src/reports.mjs';
 
 async function main() {
 	const args = await parseArguments();
@@ -50,6 +51,8 @@ async function main() {
 	if (!isValid) {
 		console.log(validate.errors);
 	}
+
+	const orgFileName = filenamify(data.orgName);
 
 	// Generate org chart images to be substituted into the slide deck.
 	const gigamonCssFilePath = path.resolve(__dirname, 'data/gigamon.css');
@@ -94,15 +97,15 @@ async function main() {
 				gigamonOrgChart.pngImageBuffer,
 			),
 			fs.writeFile(
-				path.join(args.outputDir, `${data.orgName} Org Chart.dot`),
+				path.join(args.outputDir, `${orgFileName} Org Chart.dot`),
 				customerOrgChart.graph.to_dot(),
 			),
 			fs.writeFile(
-				path.join(args.outputDir, `${data.orgName} Org Chart.svg`),
+				path.join(args.outputDir, `${orgFileName} Org Chart.svg`),
 				customerOrgChart.svgImageBuffer,
 			),
 			fs.writeFile(
-				path.join(args.outputDir, `${data.orgName} Org Chart.png`),
+				path.join(args.outputDir, `${orgFileName} Org Chart.png`),
 				customerOrgChart.pngImageBuffer,
 			),
 		]);
@@ -136,7 +139,7 @@ async function main() {
 	const meetingDate = dayjs(data.meeting.date).format('YYYY-MM-DD');
 	const outputPptxFilePath = path.join(
 		args.outputDir,
-		`${data.orgName} Cadence ${meetingDate}.pptx`,
+		`${orgFileName} Cadence ${meetingDate}.pptx`,
 	);
 
 	await generatePowerpoint(args.templateFile, data, replacementImages, outputPptxFilePath);
