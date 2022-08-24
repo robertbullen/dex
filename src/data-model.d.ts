@@ -72,7 +72,7 @@ interface Meeting<T extends JsonSchemaTarget = 'validator'> {
 	invitees: Person<T>[];
 }
 
-type MeetingFrequency = 'biweekly' | 'monthly' | 'weekly';
+type MeetingFrequency = 'biweekly' | 'monthly' | 'quarterly' | 'weekly';
 
 interface OptionalNotes {
 	notes?: string[];
