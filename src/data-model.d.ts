@@ -59,7 +59,9 @@ interface HeatMapValue extends OptionalNotes {
 type JsonSchemaTarget = 'editor' | 'validator';
 
 interface Location extends OptionalNotes {
+	host?: string;
 	name: string;
+	location?: string;
 	usingGigamon?: boolean;
 }
 
@@ -178,6 +180,6 @@ interface ToDos {
 	customer?: ToDo[];
 }
 
-interface Topic extends OptionalTask {
+interface Topic extends OptionalNotes, OptionalTask {
 	topic: string;
 }
