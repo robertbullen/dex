@@ -23,34 +23,41 @@ Object.assign(angularExpressions.filters, {
 	/**
 	 * Transforms the given `value` to a string while changing the case according to `transform`.
 	 *
-	 * @param {{} | undefined | null} value
-	 * @param {unknown} [transform]
+	 * @param {unknown} value
+	 * @param {'capital' | 'lower' | 'upper' | unknown} [transform]
 	 */
 	case(value, transform) {
-		if (value === undefined || value === null) {
-			return '';
+		const isTransformValid =
+			transform === 'capital' ||
+			transform === 'lower' ||
+			transform === 'upper' ||
+			transform === undefined;
+		if (!isTransformValid) {
+			return value;
 		}
+
+		const valueString = String(value);
 
 		switch (transform) {
 			case 'capital':
-				return capitalCase(value.toString());
+				return capitalCase(valueString);
 
 			case 'lower':
-				return lowerCase(value.toString());
+				return lowerCase(valueString);
 
 			case 'upper':
-				return upperCase(value.toString());
+				return upperCase(valueString);
 
 			default:
-				return value.toString();
+				return valueString;
 		}
 	},
 
 	/**
 	 * Formats a given date `value` in the given `'dayjs'` format.
 	 *
-	 * @param {unknown} value
-	 * @param {unknown} [format]
+	 * @param {dayjs.ConfigType | unknown} value
+	 * @param {string | unknown} [format]
 	 */
 	date(value, format) {
 		const isValidValue =
@@ -60,37 +67,55 @@ Object.assign(angularExpressions.filters, {
 				typeof value === 'string' ||
 				value instanceof Date ||
 				dayjs.isDayjs(value));
-		const newValue = isValidValue ? dayjs(value) : undefined;
-
 		const isValidFormat = typeof format === 'string';
-		const newFormat = isValidFormat ? format : undefined;
 
-		return newValue?.format(newFormat) ?? value;
+		if (!(isValidValue && isValidFormat)) {
+			return value;
+		}
+
+		const valueDayjs = dayjs(value);
+
+		return valueDayjs.format(format);
 	},
 
 	/**
 	 * Limits the given `array` to `limit` number of items iff `array` is an `Array` and `limit` is
 	 * coercable to a `number`.
 	 *
-	 * @param {unknown} array
-	 * @param {unknown} limit
+	 * @param {unknown[] | unknown} array
+	 * @param {number | unknown} [limit = 10]
+	 * @param {number | unknown} [offset = 0]
 	 */
-	limit(array, limit) {
-		const limitNumber = Number(limit);
-		return Array.isArray(array) && !Number.isNaN(limitNumber)
-			? array.slice(0, limitNumber)
+	limit(array, limit = 10, offset = 0) {
+		const limitNumber = limit === undefined || limit === null ? 10 : Number(limit);
+		const offsetNumber = offset === undefined || offset === null ? 0 : Number(offset);
+
+		return Array.isArray(array) &&
+			!Number.isNaN(limitNumber) &&
+			limitNumber >= 0 &&
+			!Number.isNaN(offsetNumber) &&
+			offsetNumber >= 0
+			? array.slice(offsetNumber, limitNumber)
 			: array;
 	},
 
 	/**
 	 * Orders the given `array` by the given `properties` in the given `directions`.
 	 *
-	 * @param {unknown} array
-	 * @param {string[]} [properties]
-	 * @param {('asc' | 'desc')[]} [directions]
+	 * @param {unknown[] | unknown} array
+	 * @param {string[] | unknown} [properties]
+	 * @param {('asc' | 'desc')[] | unknown} [directions]
 	 */
 	orderBy(array, properties, directions) {
-		if (!Array.isArray(array)) {
+		const isValidArray = Array.isArray(array);
+		const isValidProperties =
+			Array.isArray(properties) &&
+			properties.every((property) => typeof property === 'string');
+		const isValidDirections =
+			Array.isArray(directions) &&
+			directions.every((direction) => direction === 'asc' || direction === 'desc');
+
+		if (!(isValidArray && isValidProperties && isValidDirections)) {
 			return array;
 		}
 
@@ -111,26 +136,32 @@ Object.assign(angularExpressions.filters, {
 	},
 
 	/**
-	 * @param {unknown} array
-	 * @param {string} condition
+	 * @param {unknown[] | unknown} array
+	 * @param {string | unknown} condition
 	 */
 	partition(array, condition) {
-		if (!Array.isArray(array)) {
+		const isValidArray = Array.isArray(array);
+		const isValidCondition = typeof condition === 'string';
+
+		if (!(isValidArray && isValidCondition)) {
 			return array;
 		}
 
-		const testItem = angularExpressions.compile(condition.toString(), undefined);
+		const testItem = angularExpressions.compile(condition, undefined);
 		return partition(array, (item) => testItem(item));
 	},
 
 	/**
 	 * Filters the given `array` to elements that satisfy the given `condition`.
 	 *
-	 * @param {unknown} array
-	 * @param {{}} condition
+	 * @param {unknown[] | unknown} array
+	 * @param {string | unknown} condition
 	 */
 	where(array, condition) {
-		if (!Array.isArray(array)) {
+		const isValidArray = Array.isArray(array);
+		const isValidCondition = typeof condition === 'string';
+
+		if (!(isValidArray && isValidCondition)) {
 			return array;
 		}
 
@@ -178,38 +209,6 @@ class AngularParser {
 }
 
 /**
- * @implements {DxtModule}
- */
-class TestModule {
-	/**
-	 * @param {unknown} options
-	 */
-	set(options) {
-		console.log(this.set.name, { options });
-	}
-
-	/**
-	 * @param {string} placeHoderContent
-	 * @returns {DxtSimplePart | null}
-	 */
-	parse(placeHoderContent) {
-		console.log(this.parse.name, { placeHoderContent });
-		return null;
-	}
-
-	/**
-	 * @param {DxtPart[]} postParsed
-	 * @param {DxtModule[]} modules
-	 * @param {unknown} options
-	 * @returns {DxtPart[]}
-	 */
-	postparse(postParsed, modules, options) {
-		console.log(this.postparse.name, { postParsed, modules, options });
-		return postParsed;
-	}
-}
-
-/**
  * @typedef {object} ReplacementImage
  * @property {string} oldImageMd5
  * @property {Buffer} newImageBuffer
@@ -233,7 +232,6 @@ export class Templater extends Docxtemplater {
 		const templateZip = new PizZip(templatePptxBuffer);
 
 		return new Templater(templateZip, {
-			// modules: [new TestModule()],
 			paragraphLoop: true,
 			parser: AngularParser.create,
 		});
