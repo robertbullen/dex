@@ -16,7 +16,7 @@ const dimensions = {
 		labelFontSize: 24,
 	},
 	node: {
-		heightInches: 0.67,
+		heightInches: 0.75,
 		labelFontSize: 14,
 		widthInches: 3.25,
 	},
@@ -27,7 +27,7 @@ const dimensions = {
  * @property {Person[]} accentedPeople
  * @property {string} css
  * @property {number} [heightInches=13.333]
- * @property {OrgChartOrganizationType} organization
+ * @property {OrganizationType} organization
  * @property {number} [pixelsPerInch=240]
  * @property {number} [widthInches=7.5]
  *

@@ -109,11 +109,13 @@ Object.assign(angularExpressions.filters, {
 	orderBy(array, properties, directions) {
 		const isValidArray = Array.isArray(array);
 		const isValidProperties =
-			Array.isArray(properties) &&
-			properties.every((property) => typeof property === 'string');
+			properties === undefined ||
+			(Array.isArray(properties) &&
+				properties.every((property) => typeof property === 'string'));
 		const isValidDirections =
-			Array.isArray(directions) &&
-			directions.every((direction) => direction === 'asc' || direction === 'desc');
+			directions === undefined ||
+			(Array.isArray(directions) &&
+				directions.every((direction) => direction === 'asc' || direction === 'desc'));
 
 		if (!(isValidArray && isValidProperties && isValidDirections)) {
 			return array;

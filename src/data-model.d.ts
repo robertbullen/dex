@@ -142,11 +142,12 @@ type PhoneName = 'mobile' | 'office';
 
 interface Product extends OptionalNotes {
 	function: string;
+	gigamonConnected?: boolean;
 	product?: string;
 	type?: ProductType;
 }
 
-type ProductType = 'infrastructure' | 'soc-triad' | 'gigamon-fed';
+type ProductType = 'infrastructure' | 'soc-triad';
 
 interface Project extends OptionalNotes, OptionalTask {
 	project: string;

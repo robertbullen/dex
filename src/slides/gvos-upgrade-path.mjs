@@ -18,7 +18,7 @@ export async function updateGvosUpgradePathImage(data, replaceImage) {
 	const oldImageMd5 = '4d7d87e247962f2474efd5e2dc8651cf';
 	const tableSelector = '#mc-main-content > table';
 	const upgradePathPageUrl =
-		'https://docs.gigamon.com/doclib516/Content/GV-OS-Upgrade/Upgrade_Summary_Path___Standalone_Nodes.html';
+		'https://docs.gigamon.com/doclib60/Content/GV-OS-Upgrade/Upgrade_Summary_Path___Standalone_Nodes.html';
 
 	// Launch the browser and navigate to the page.
 	const browser = await puppeteer.launch({
