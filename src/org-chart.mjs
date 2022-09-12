@@ -192,7 +192,8 @@ function createOrganizationGraph(args) {
 		labelloc: 'top',
 		newrank: true,
 		pad: dimensions.graph.paddingInches,
-		rankdir: breadth > 3 && breadth > depth ? 'LR' : 'TB',
+		rankdir:
+			args.organization.orgChartDirection ?? (breadth > 3 && breadth > depth ? 'LR' : 'TB'),
 		ratio: 'fill',
 		size: `${args.widthInches},${args.heightInches}`,
 		splines: 'ortho',
