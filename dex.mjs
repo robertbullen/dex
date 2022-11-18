@@ -37,7 +37,11 @@ async function main() {
 
 	const data = /** @type {DataModelType} */ (customer);
 	data.gigamon = gigamon;
-	data.meeting.date = args.meetingDate;
+
+	// The yargs-interactive package appears to not apply the same camel case alternative property
+	// names as yargs does. So the kebab case property access is used here in case the value was
+	// assigned interactively.
+	data.meeting.date = args['meeting-date'];
 
 	// Validate the data.
 	const schema = generateJsonSchema('DataModel', 'validator');
@@ -72,7 +76,9 @@ async function main() {
 		generateOrgChart({
 			accentedPeople: data.meeting.invitees,
 			css: gigamonCss,
+			noteworthyPeople: data.meeting.noteworthyPeople,
 			organization: data.gigamon,
+			prune: true,
 		}),
 		generateOrgChart({
 			accentedPeople: data.meeting.invitees,
@@ -177,10 +183,11 @@ function parseArguments() {
 			},
 			'meeting-date': {
 				alias: 'm',
+				default: dayjs().format('YYYY-MM-DD'),
 				describe:
 					'The date when the meeting will take place, specified in yyyy-mm-dd format.',
 				group: 'Interactive Arguments',
-				prompt: /** @type {'if-empty'} */ ('if-empty'),
+				prompt: /** @type {'if-no-arg'} */ ('if-no-arg'),
 				type: 'string',
 			},
 			// 'password': {

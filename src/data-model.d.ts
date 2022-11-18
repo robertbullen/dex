@@ -1,4 +1,7 @@
-interface Case<T extends JsonSchemaTarget = 'validator'> extends OptionalNotes, OptionalUrls {
+interface Case<T extends JsonSchemaTarget = 'validator'>
+	extends OptionalNotes,
+		OptionalSalesforceId,
+		OptionalUrls {
 	contact: ReferenceOr<Person<T>>;
 
 	/**
@@ -27,18 +30,14 @@ interface DataModelType<T extends JsonSchemaTarget = 'validator'> extends Organi
 	locations: Location[];
 	meeting: Meeting<T>;
 	notableDates: {
-		/**
-		 * @format date
-		 */
-		firstPurchase?: string;
-
-		// This is an arbitrary string to allow freeform text such as "The third Thursday in December".
-		fiscalCalendar: string;
-	};
+		name: string;
+		when: string;
+	}[];
 	partners: OrganizationType<T>[];
 	// portfolioHeatMap: HeatMap<'cloud' | 'core' | 'threatInsight'>;
 	products: Product[];
 	projects: Project[];
+	quotes: Quote[];
 	risks: Risk[];
 	salesTeam: T extends 'editor' ? ReferenceOr<Person<T>[]> : Person<T>[];
 	todos: ToDos;
@@ -47,6 +46,8 @@ interface DataModelType<T extends JsonSchemaTarget = 'validator'> extends Organi
 
 type DataModelEditor = DataModelType<'editor'>;
 type DataModel = DataModelType<'validator'>;
+
+type GigamonIntegration = 'active' | 'inactive';
 
 type HeatMap<T extends PropertyKey> = Record<T, HeatMapValue>;
 
@@ -59,10 +60,10 @@ interface HeatMapValue extends OptionalNotes {
 type JsonSchemaTarget = 'editor' | 'validator';
 
 interface Location extends OptionalNotes {
+	gigamonIntegration?: GigamonIntegration;
 	host?: string;
 	name: string;
 	location?: string;
-	usingGigamon?: boolean;
 }
 
 interface Meeting<T extends JsonSchemaTarget = 'validator'> {
@@ -72,6 +73,7 @@ interface Meeting<T extends JsonSchemaTarget = 'validator'> {
 	date: T extends 'editor' ? string | undefined : string;
 	frequency: MeetingFrequency;
 	invitees: Person<T>[];
+	noteworthyPeople?: Person<T>[];
 }
 
 type MeetingFrequency = 'biweekly' | 'monthly' | 'quarterly' | 'weekly';
@@ -86,6 +88,10 @@ interface OptionalPhones {
 		name: PhoneName;
 		phone: string;
 	}[];
+}
+
+interface OptionalSalesforceId {
+	sfid?: string;
 }
 
 interface OptionalTask {
@@ -123,16 +129,16 @@ type PeopleDictionary<T extends JsonSchemaTarget = 'validator'> = Record<string,
 /**
  * This is an internal type. Use `Person` instead.
  */
-interface PersonType extends OptionalPhones, OptionalUrls {
+interface PersonType extends OptionalNotes, OptionalPhones, OptionalSalesforceId, OptionalUrls {
 	/**
 	 * @format email
 	 */
 	email?: string;
 	name: string;
 	portalUser?: boolean;
+	specialties?: string[];
 	team: string;
 	title?: string;
-	specialties?: string[];
 }
 
 type Person<T extends JsonSchemaTarget = 'validator'> = T extends 'editor'
@@ -143,7 +149,7 @@ type PhoneName = 'mobile' | 'office';
 
 interface Product extends OptionalNotes {
 	function: string;
-	gigamonConnected?: boolean;
+	gigamonIntegration?: GigamonIntegration;
 	product?: string;
 	type?: ProductType;
 }
@@ -152,6 +158,21 @@ type ProductType = 'infrastructure' | 'soc-triad';
 
 interface Project extends OptionalNotes, OptionalTask {
 	project: string;
+}
+
+interface Quote extends OptionalNotes, OptionalSalesforceId {
+	number: string;
+	quote: string;
+
+	/**
+	 * @format date
+	 */
+	deliveryDate?: string;
+
+	/**
+	 * @format date
+	 */
+	expiryDate?: string;
 }
 
 type ReferenceOr<T> =
