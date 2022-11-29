@@ -38,10 +38,7 @@ async function main() {
 	const data = /** @type {DataModelType} */ (customer);
 	data.gigamon = gigamon;
 
-	// The yargs-interactive package appears to not apply the same camel case alternative property
-	// names as yargs does. So the kebab case property access is used here in case the value was
-	// assigned interactively.
-	data.meeting.date = args['meeting-date'];
+	data.meeting.date = args.meetingDate;
 
 	// Validate the data.
 	const schema = generateJsonSchema('DataModel', 'validator');
@@ -156,9 +153,9 @@ async function main() {
 	}
 }
 
-function parseArguments() {
+async function parseArguments() {
 	const yargs = yargsInteractive(hideBin(process.argv));
-	return yargs
+	const args = await yargs
 		.help()
 		.usage(
 			[
@@ -182,7 +179,7 @@ function parseArguments() {
 				hidden: true,
 			},
 			'meeting-date': {
-				alias: 'm',
+				// alias: 'm',
 				default: dayjs().format('YYYY-MM-DD'),
 				describe:
 					'The date when the meeting will take place, specified in yyyy-mm-dd format.',
@@ -248,6 +245,14 @@ function parseArguments() {
 				type: 'string',
 			},
 		});
+
+	// The yargs-interactive package doesn't recognize aliases, so it will treat `--meeting-date`
+	// and `-m` (now commented out above) as distinct arguments. Catch this invalid usage.
+	if (args.m) {
+		throw new Error('Argument `-m` is not supported; use `--meeting-date` instead');
+	}
+
+	return args;
 }
 
 main();
