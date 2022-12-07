@@ -116,6 +116,7 @@ interface OptionalUrls {
 
 interface OrganizationType<T extends JsonSchemaTarget = 'validator'> {
 	orgChartDirection?: 'LR' | 'TB';
+	orgChartJustification?: 'roots' | 'leaves';
 	orgName: string;
 	people?: PeopleDictionary<T>;
 	staff: StaffMember<T>[];

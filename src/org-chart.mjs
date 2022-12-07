@@ -373,21 +373,28 @@ function addRankClusters(args, staff, graph) {
 	}
 
 	// Add a top-level rank cluster if necessary.
-	createAndPopulateRankClusterIfNecessary(
-		`${args.organization.orgName} Root`,
-		staff.filter((staffMember) => !!staffMember.staff),
-		'min',
-	);
+	if (args.organization.orgChartJustification === 'roots') {
+		createAndPopulateRankClusterIfNecessary(
+			`${args.organization.orgName} Root`,
+			staff.filter((staffMember) => !!staffMember.staff),
+			'min',
+		);
+	}
 
 	// Add a bottom-level rank cluster.
-	// const leafRankCluster = createRankCluster(`${args.organization.orgName} Leaf`, 'max');
+	const leafRankCluster =
+		args.organization.orgChartJustification === 'leaves'
+			? createRankCluster(`${args.organization.orgName} Leaf`, 'max')
+			: undefined;
 
 	// Recurse the hierarchy, adding rank clusters where needed.
 	traverseStaff(staff, (staffMember, _hierarchy) => {
 		if (staffMember.staff) {
-			createAndPopulateRankClusterIfNecessary(staffMember.person.name, staffMember.staff);
+			if (args.organization.orgChartJustification === 'roots') {
+				createAndPopulateRankClusterIfNecessary(staffMember.person.name, staffMember.staff);
+			}
 		} else {
-			// leafRankCluster.addNode(staffMember.person.name);
+			leafRankCluster?.addNode(staffMember.person.name);
 		}
 		return true;
 	});
