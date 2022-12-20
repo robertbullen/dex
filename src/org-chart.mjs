@@ -372,32 +372,27 @@ function addRankClusters(args, staff, graph) {
 		return rankCluster;
 	}
 
-	// Add a top-level rank cluster if necessary.
 	if (args.organization.orgChartJustification === 'roots') {
-		createAndPopulateRankClusterIfNecessary(
+		const _rootRankCluster = createAndPopulateRankClusterIfNecessary(
 			`${args.organization.orgName} Root`,
 			staff.filter((staffMember) => !!staffMember.staff),
-			'min',
+			'source',
 		);
-	}
 
-	// Add a bottom-level rank cluster.
-	const leafRankCluster =
-		args.organization.orgChartJustification === 'leaves'
-			? createRankCluster(`${args.organization.orgName} Leaf`, 'max')
-			: undefined;
+		traverseStaff(staff, (staffMember, _hierarchy) => {
+			createAndPopulateRankClusterIfNecessary(staffMember.person.name, staffMember.staff);
+			return true;
+		});
+	} else if (args.organization.orgChartJustification === 'leaves') {
+		const leafRankCluster = createRankCluster(`${args.organization.orgName} Leaf`, 'sink');
 
-	// Recurse the hierarchy, adding rank clusters where needed.
-	traverseStaff(staff, (staffMember, _hierarchy) => {
-		if (staffMember.staff) {
-			if (args.organization.orgChartJustification === 'roots') {
-				createAndPopulateRankClusterIfNecessary(staffMember.person.name, staffMember.staff);
+		traverseStaff(staff, (staffMember, _hierarchy) => {
+			if (!staffMember.staff) {
+				leafRankCluster.addNode(staffMember.person.name);
 			}
-		} else {
-			leafRankCluster?.addNode(staffMember.person.name);
-		}
-		return true;
-	});
+			return true;
+		});
+	}
 }
 
 /**
