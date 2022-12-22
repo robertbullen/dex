@@ -1,22 +1,24 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
+
+// TODO: Figure out why this is necessary.
+/// <reference path="../typings/data-model.d.ts" />
 
 import * as fs from 'fs';
 import * as path from 'path';
 import stringify from 'safe-stable-stringify';
 import * as url from 'url';
-import { generateJsonSchema } from '../json-schema.mjs';
+import { generateJsonSchema } from '../json-schema.js';
 
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename: string = url.fileURLToPath(import.meta.url);
+const __dirname: string = path.dirname(__filename);
 
-/** @type {[string, JsonSchemaTarget][]} */
-const schemaParams = [
+const schemaParams: [string, JsonSchemaTarget][] = [
 	// ['DataModel', 'validator'],
 	['DataModelEditor', 'editor'],
 	['OrganizationEditor', 'editor'],
 ];
 
-const dstDirPath = path.resolve(__dirname, '../schemas');
+const dstDirPath: string = path.resolve(__dirname, '../schemas');
 fs.mkdirSync(dstDirPath, { recursive: true });
 
 for (const [typeName, target] of schemaParams) {

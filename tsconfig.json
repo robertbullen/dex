@@ -6,9 +6,13 @@
 		"lib": ["ES2022"],
 		"module": "ES2022",
 		"moduleResolution": "node",
+		"skipDefaultLibCheck": true,
 		"skipLibCheck": false,
 		"strict": true,
 		"target": "ES2022"
 	},
-	"include": ["*.ts", "./src/**/*.ts"]
+	"include": ["./src/typings/*.d.ts", "./dex.ts", "./src/scripts/*.ts", "./src/**/*.test.ts"],
+	"ts-node": {
+		"esm": true
+	}
 }

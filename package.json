@@ -1,8 +1,4 @@
 {
-	"name": "dex",
-	"version": "1.0.0",
-	"main": "dex.mjs",
-	"license": "MIT",
 	"dependencies": {
 		"@apidevtools/json-schema-ref-parser": "^9.0.9",
 		"ajv": "^8.11.0",
@@ -28,18 +24,23 @@
 		"yargs-interactive": "^3.0.1",
 		"yup": "1.0.0-beta.7"
 	},
-	"resolutions": {
-		"puppeteer": "^15.5.0"
-	},
-	"scripts": {
-		"build": "./src/scripts/generate-json-schemas.mjs",
-		"test": "jest"
-	},
 	"devDependencies": {
 		"@types/lodash-es": "^4.17.6",
 		"jest": "^29.3.1",
 		"ts-jest": "^29.0.3",
+		"ts-node": "^10.9.1",
 		"typescript": "^4.9.4"
 	},
-	"type": "module"
+	"license": "MIT",
+	"main": "dex.ts",
+	"name": "dex",
+	"resolutions": {
+		"puppeteer": "^15.5.0"
+	},
+	"scripts": {
+		"build": "./src/scripts/generate-json-schemas.ts",
+		"test": "jest"
+	},
+	"type": "module",
+	"version": "1.0.0"
 }

@@ -2,23 +2,18 @@ import * as tsj from 'typescript-json-schema';
 import * as path from 'path';
 import * as url from 'url';
 
-/**
- * @param {string} typeName
- * @param {JsonSchemaTarget} target
- * @returns {tsj.Definition}
- */
-export function generateJsonSchema(typeName, target) {
+export function generateJsonSchema(typeName: string, target: JsonSchemaTarget): tsj.Definition {
 	// Resolve paths.
-	const __filename = url.fileURLToPath(import.meta.url);
-	const __dirname = path.dirname(__filename);
+	const __filename: string = url.fileURLToPath(import.meta.url);
+	const __dirname: string = path.dirname(__filename);
 
-	const jsconfigFilePath = path.resolve(__dirname, '../jsconfig.json');
-	const dataModelFilePath = path.resolve(__dirname, 'data-model.d.ts');
+	const tsconfigFilePath: string = path.resolve(__dirname, '../tsconfig.json');
+	const dataModelFilePath: string = path.resolve(__dirname, 'typings/data-model.d.ts');
 
 	// Generate the JSON Schema from the type declarations file.
-	const program = tsj.programFromConfig(jsconfigFilePath, [dataModelFilePath]);
+	const program: tsj.Program = tsj.programFromConfig(tsconfigFilePath, [dataModelFilePath]);
 
-	const schema = tsj.generateSchema(program, typeName, {
+	const schema: tsj.Definition | null = tsj.generateSchema(program, typeName, {
 		// Ensure that there's a named definition for PersonTargeted.
 		aliasRef: true,
 
