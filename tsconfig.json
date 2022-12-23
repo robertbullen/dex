@@ -9,9 +9,10 @@
 		"skipDefaultLibCheck": true,
 		"skipLibCheck": false,
 		"strict": true,
-		"target": "ES2022"
+		"target": "ES2022",
+		"typeRoots": ["./src/typings", "./node_modules/@types"]
 	},
-	"include": ["./src/typings/*.d.ts", "./dex.ts", "./src/scripts/*.ts", "./src/**/*.test.ts"],
+	"include": ["./dex.ts", "./src/scripts/*.ts", "./src/**/*.test.ts"],
 	"ts-node": {
 		"esm": true
 	}

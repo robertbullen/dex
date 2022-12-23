@@ -1,8 +1,6 @@
 #!/usr/bin/env ts-node
 
-// TODO: Figure out why this is necessary.
-/// <reference path="../typings/data-model.d.ts" />
-
+import { JsonSchemaTarget } from 'dex';
 import * as fs from 'fs';
 import * as path from 'path';
 import stringify from 'safe-stable-stringify';

@@ -1,5 +1,6 @@
-import * as tsj from 'typescript-json-schema';
+import { JsonSchemaTarget } from 'dex';
 import * as path from 'path';
+import * as tsj from 'typescript-json-schema';
 import * as url from 'url';
 
 export function generateJsonSchema(typeName: string, target: JsonSchemaTarget): tsj.Definition {
@@ -8,7 +9,7 @@ export function generateJsonSchema(typeName: string, target: JsonSchemaTarget): 
 	const __dirname: string = path.dirname(__filename);
 
 	const tsconfigFilePath: string = path.resolve(__dirname, '../tsconfig.json');
-	const dataModelFilePath: string = path.resolve(__dirname, 'typings/data-model.d.ts');
+	const dataModelFilePath: string = path.resolve(__dirname, './typings/dex/index.d.ts');
 
 	// Generate the JSON Schema from the type declarations file.
 	const program: tsj.Program = tsj.programFromConfig(tsconfigFilePath, [dataModelFilePath]);

@@ -23,6 +23,7 @@ type InferredOptionTypes2<T extends TypedOptions> = {
 	[K in keyof T]:
 		T[K] extends { prompt: 'always' | 'if-no-arg' | 'if-empty' } ? string :
 		T[K] extends { prompt: 'never' | undefined } ? (string | undefined) :
+		// @ts-ignore
 		InferredOptionType<T[K]>;
 };
 
