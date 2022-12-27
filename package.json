@@ -15,7 +15,7 @@
 		"lower-case": "^2.0.2",
 		"open": "^8.4.0",
 		"pizzip": "^3.1.4",
-		"puppeteer": "^15.5.0",
+		"puppeteer": "^19.4.1",
 		"safe-stable-stringify": "^2.4.1",
 		"typescript-json-schema": "0.53.1",
 		"upper-case": "^2.0.2",
