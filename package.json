@@ -17,7 +17,7 @@
 		"pizzip": "^3.1.4",
 		"puppeteer": "^15.5.0",
 		"safe-stable-stringify": "^2.4.1",
-		"typescript-json-schema": "^0.53.1",
+		"typescript-json-schema": "0.53.1",
 		"upper-case": "^2.0.2",
 		"xml2js": "^0.4.23",
 		"yargs": "^17.6.2",
