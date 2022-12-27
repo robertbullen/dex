@@ -58,7 +58,7 @@ declare module 'dex' {
 		color: HeatMapColor;
 	}
 
-	export type JsonSchemaTarget = 'editor' | 'validator';
+	type JsonSchemaTarget = 'editor' | 'validator';
 
 	interface Location extends OptionalNotes {
 		gigamonIntegration?: GigamonIntegration;

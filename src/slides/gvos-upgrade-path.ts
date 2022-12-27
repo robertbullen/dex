@@ -1,16 +1,13 @@
-import puppeteer from 'puppeteer';
+import { DataModel } from 'dex';
+import puppeteer, { Browser, ElementHandle, Page } from 'puppeteer';
+import { ReplacementImage } from '../templater/templater';
 
 const showWindow = true;
 
-/**
- * @typedef {import('../templater.mjs').ReplacementImage} ReplacementImage
- */
-
-/**
- * @param {DataModel} data
- * @param {(replacementImage: ReplacementImage) => void} replaceImage
- */
-export async function updateGvosUpgradePathImage(data, replaceImage) {
+export async function updateGvosUpgradePathImage(
+	data: DataModel,
+	replaceImage: (replacementImage: ReplacementImage) => void,
+) {
 	// const imageDimensionsInches = {
 	//     height: 4.5,
 	//     width: 11.98,
@@ -21,7 +18,7 @@ export async function updateGvosUpgradePathImage(data, replaceImage) {
 		'https://docs.gigamon.com/doclib60/Content/GV-OS-Upgrade/Upgrade_Summary_Path___Standalone_Nodes.html';
 
 	// Launch the browser and navigate to the page.
-	const browser = await puppeteer.launch({
+	const browser: Browser = await puppeteer.launch({
 		// Maximize the viewport area instead of the default 800x600.
 		defaultViewport: null,
 
@@ -30,18 +27,20 @@ export async function updateGvosUpgradePathImage(data, replaceImage) {
 		headless: !showWindow,
 	});
 	try {
-		const page = (await browser.pages())[0] ?? (await browser.newPage());
+		const page: Page = (await browser.pages())[0] ?? (await browser.newPage());
 		await page.goto(upgradePathPageUrl);
 
 		// Get a screenshot of the table.
-		const table = await page.$(tableSelector);
+		const table: ElementHandle | null = await page.$(tableSelector);
 		if (!table) {
 			throw new Error(
 				`${updateGvosUpgradePathImage.name}: Element not found for selector '${tableSelector}'`,
 			);
 		}
 
-		const newImageBuffer = await table.screenshot({ captureBeyondViewport: true });
+		const newImageBuffer: Buffer | string = await table.screenshot({
+			captureBeyondViewport: true,
+		});
 		if (typeof newImageBuffer === 'string') {
 			throw new Error(
 				`${updateGvosUpgradePathImage.name}: Unexpected encoding of table element image`,

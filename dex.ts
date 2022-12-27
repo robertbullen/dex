@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env npx ts-node
 
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
@@ -11,14 +11,14 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import yargsInteractive from 'yargs-interactive';
 import { hideBin } from 'yargs/helpers';
-import { loadDataFromFileSystem } from './src/data.mjs';
-import { generateJsonSchema } from './src/json-schema.mjs';
-import { generateOrgChart } from './src/org-chart.mjs';
-import { generatePowerpoint } from './src/powerpoint.mjs';
-import { updateGvosUpgradePathImage } from './src/slides/gvos-upgrade-path.mjs';
+import { loadDataFromFileSystem } from './src/data.js';
+import { generateJsonSchema } from './src/json-schema.js';
+import { generateOrgChart } from './src/org-chart.js';
+import { updateGvosUpgradePathImage } from './src/slides/gvos-upgrade-path.js';
+import { ReplacementImage, Templater } from './src/templater/templater.js';
 // import { getReport } from './src/reports.mjs';
 
-async function main() {
+async function main(): Promise<void> {
 	const args = await parseArguments();
 
 	const experiment = false;
@@ -35,7 +35,7 @@ async function main() {
 		loadDataFromFileSystem(args.dataPath),
 	]);
 
-	const data = /** @type {DataModelType} */ (customer);
+	const data = /** @type {DataModelType} */ customer;
 	data.gigamon = gigamon;
 
 	data.meeting.date = args.meetingDate;
@@ -115,14 +115,9 @@ async function main() {
 	}
 
 	// Generate the slide deck.
-	/** @type {import('./src/templater.mjs').ReplacementImage[]}*/
-	const replacementImages = [];
+	const replacementImages: ReplacementImage[] = [];
 
-	/**
-	 * @param {import('./src/templater.mjs').ReplacementImage} replacementImage
-	 * @returns {void}
-	 */
-	function replaceImage(replacementImage) {
+	function replaceImage(replacementImage: ReplacementImage): void {
 		replacementImages.push(replacementImage);
 	}
 
@@ -145,7 +140,7 @@ async function main() {
 		`${orgFileName} Cadence ${meetingDate}.pptx`,
 	);
 
-	await generatePowerpoint(args.templateFile, data, replacementImages, outputPptxFilePath);
+	await Templater.execute(args.templateFile, data, replacementImages, outputPptxFilePath);
 
 	// Open the newly created slide deck if the user wishes it.
 	if (args.review) {
@@ -184,7 +179,7 @@ async function parseArguments() {
 				describe:
 					'The date when the meeting will take place, specified in yyyy-mm-dd format.',
 				group: 'Interactive Arguments',
-				prompt: /** @type {'if-no-arg'} */ ('if-no-arg'),
+				prompt: /** @type {'if-no-arg'} */ 'if-no-arg',
 				type: 'string',
 			},
 			// 'password': {

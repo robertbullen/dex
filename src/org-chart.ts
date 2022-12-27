@@ -1,13 +1,18 @@
 import svgToPng from 'convert-svg-to-png';
+import { Organization, Person, StaffMember } from 'dex';
 import graphviz from 'graphviz';
 import xml2js from 'xml2js';
 
 const dimensions = {
 	graph: {
+		// Matches PowerPoint's default 16:9 template.
 		heightInches: 7.5,
+
 		labelFontSize: 40,
 		paddingInches: 0.5,
 		pixelsPerInch: 240,
+
+		// Matches PowerPoint's default 16:9 template.
 		widthInches: 13.333,
 	},
 	cluster: {
@@ -20,40 +25,74 @@ const dimensions = {
 	},
 };
 
-/**
- * @typedef {object} GenerateOrgChartParams
- * @property {Person[]} [accentedPeople]
- * @property {string} css
- * @property {number} [heightInches = 13.333]
- * @property {Person[]} [noteworthyPeople]
- * @property {Organization} organization
- * @property {number} [pixelsPerInch=240]
- * @property {boolean} [prune = false]
- * @property {number} [widthInches = 7.5]
- *
- * @typedef {object} GenerateOrgChartResult
- * @property {graphviz.Graph} graph
- * @property {Buffer} pngImageBuffer
- * @property {Buffer} svgImageBuffer
- */
+export interface GenerateOrgChartParams {
+	/**
+	 * People that are highlighted in a strong manner.
+	 */
+	accentedPeople?: Person[];
+
+	/**
+	 * The CSS to apply to the SVG image.
+	 */
+	css: string;
+
+	/**
+	 * The height to target when generating the final graphic.
+	 *
+	 * @default 7.5
+	 */
+	heightInches?: number;
+
+	/**
+	 * People that are highlighted less strongly than {@link accentedPeople}.
+	 */
+	noteworthyPeople?: Person[];
+
+	/**
+	 * The organization to render.
+	 */
+	organization: Organization;
+
+	/**
+	 * The pixels per inch to use when rasterizing the final graphic.
+	 */
+	pixelsPerInch?: number;
+
+	/**
+	 * When `true`, prunes all people who are not linked to either {@link accentedPeople} or {@link noteworthyPeople}.
+	 * @default false
+	 */
+	prune?: boolean;
+
+	/**
+	 * The width to target when generating the final graphic.
+	 *
+	 * @default 13.333
+	 */
+	widthInches?: number;
+}
+
+export interface GenerateOrgChartResult {
+	graph: graphviz.Graph;
+	pngImageBuffer: Buffer;
+	svgImageBuffer: Buffer;
+}
 
 /**
- * Generates an org chart using GraphViz, rendered as SVG and PNG images.
+ * Generates an org chart graphic.
  *
- * There are a couple advantages to generating org charts as SVGs here: First, as with any vector
- * graphic, is the image will scale nicely with the presentation. Second, and more importantly, is
- * the font that Gigamon uses in its PowerPoint decks is Century Gothic, which is not freely
- * available outside of Microsoft Office. SVG images only specify the desired fonts, it is up to
- * the renderer to supply them. In this case, Microsoft Office will be the renderer and the font
- * will be available.
+ * This implementation uses the following pipeline:
  *
- * @param {GenerateOrgChartParams} args
- * @returns {Promise<GenerateOrgChartResult>}
+ * 1. Use GraphViz to describe the org chart.
+ * 2. Export the GraphViz structure to SVG.
+ * 3. Modify the SVG to correct proportions and inject CSS.
+ * 4. Use Chromium to rasterize the SVG to PNG.
  */
-export async function generateOrgChart(args) {
+export async function generateOrgChart(
+	args: GenerateOrgChartParams,
+): Promise<GenerateOrgChartResult> {
 	// Supply reasonable default values.
-	/** @type {Required<GenerateOrgChartParams>} */
-	const newArgs = {
+	const newArgs: Required<GenerateOrgChartParams> = {
 		...args,
 		accentedPeople: args.accentedPeople ?? [],
 		heightInches: args.heightInches ?? dimensions.graph.heightInches,
@@ -83,8 +122,7 @@ export async function generateOrgChart(args) {
 	// graphviz. The drawback is that the file is created asynchronously without notification, and
 	// there's more work to do on the SVG, so manually wrapping with a Promise avoids watching for
 	// and opening a file from disk.
-	/** @type {Buffer} */
-	const oldSvgImageBuffer = await new Promise((resolve, reject) =>
+	const oldSvgImageBuffer: Buffer = await new Promise<Buffer>((resolve, reject): void =>
 		graph.render(
 			'svg',
 			(stdout) => {
@@ -119,7 +157,7 @@ export async function generateOrgChart(args) {
 	const newViewport = { ...oldViewport };
 	const newViewbox = { ...oldViewbox };
 
-	const aspectRatio = newArgs.widthInches / newArgs.heightInches;
+	const aspectRatio: number = newArgs.widthInches / newArgs.heightInches;
 	if (oldViewport.width / oldViewport.height > aspectRatio) {
 		newViewport.height = oldViewport.width / aspectRatio;
 		newViewbox.height = newViewport.height;
@@ -161,11 +199,11 @@ export async function generateOrgChart(args) {
 			pretty: true,
 		},
 	});
-	const newSvgImageBuffer = Buffer.from(builder.buildObject(newSvgDoc));
+	const newSvgImageBuffer: Buffer = Buffer.from(builder.buildObject(newSvgDoc));
 
 	// PowerPoint's SVG rendering has some limitations, so convert the SVG to PNG in order to
 	// capture the most accurate rendering possible.
-	const pngImageBuffer = await svgToPng.convert(newSvgImageBuffer, {
+	const pngImageBuffer: Buffer = await svgToPng.convert(newSvgImageBuffer, {
 		height: newArgs.heightInches * newArgs.pixelsPerInch,
 		width: newArgs.widthInches * newArgs.pixelsPerInch,
 	});
@@ -177,12 +215,10 @@ export async function generateOrgChart(args) {
 	};
 }
 
-/**
- * @param {Required<GenerateOrgChartParams>} args
- * @param {StaffMember[]} staff
- * @returns {graphviz.Graph}
- */
-function createOrganizationGraph(args, staff) {
+function createOrganizationGraph(
+	args: Required<GenerateOrgChartParams>,
+	staff: StaffMember[],
+): graphviz.Graph {
 	const graph = graphviz.graph(args.organization.orgName);
 
 	// Determine whether the org chart will be taller or wider.
@@ -219,25 +255,18 @@ function createOrganizationGraph(args, staff) {
 	return graph;
 }
 
-/**
- *
- * @param {string} team
- * @returns {string}
- */
-function teamClusterId(team) {
+function teamClusterId(team: string): string {
 	return `cluster ${team}`;
 }
 
-/**
- * @param {Required<GenerateOrgChartParams>} _args
- * @param {StaffMember[]} staff
- * @param {graphviz.Graph} graph
- * @returns {void}
- */
-function addTeamClusters(_args, staff, graph) {
-	traverseStaff(staff, (staffMember, _hierarchy) => {
-		const clusterId = teamClusterId(staffMember.person.team);
-		let cluster = graph.getCluster(clusterId);
+function addTeamClusters(
+	_args: Required<GenerateOrgChartParams>,
+	staff: StaffMember[],
+	graph: graphviz.Graph,
+): void {
+	traverseStaff(staff, (staffMember: StaffMember, _hierarchy: readonly StaffMember[]): true => {
+		const clusterId: string = teamClusterId(staffMember.person.team);
+		let cluster: graphviz.Graph | undefined = graph.getCluster(clusterId);
 		if (!cluster) {
 			cluster = graph.addCluster(clusterId);
 
@@ -256,34 +285,39 @@ function addTeamClusters(_args, staff, graph) {
 	});
 }
 
-/**
- * @param {Required<GenerateOrgChartParams>} args
- * @param {StaffMember[]} staff
- * @param {graphviz.Graph} graph
- * @returns {Map<string, graphviz.Node>}
- */
-function addStaffNodes(args, staff, graph) {
-	/** @type {Map<string, graphviz.Node>} */
-	const staffNodes = new Map();
+function addStaffNodes(
+	args: Required<GenerateOrgChartParams>,
+	staff: StaffMember[],
+	graph: graphviz.Graph,
+): Map<string, graphviz.Node> {
+	const staffNodes = new Map<string, graphviz.Node>();
 
-	traverseStaff(staff, (staffMember, _hierarchy) => {
-		const teamCluster = graph.getCluster(teamClusterId(staffMember.person.team));
+	traverseStaff(staff, (staffMember: StaffMember, _hierarchy: readonly StaffMember[]): true => {
+		const teamCluster: graphviz.Graph | undefined = graph.getCluster(
+			teamClusterId(staffMember.person.team),
+		);
 		if (!teamCluster) throw new Error();
 
 		// Determine whether the person is accented or noteworthy.
-		const isAccented = !!findPersonByValue(args.accentedPeople, staffMember.person);
-		const isNoteworthy = !!findPersonByValue(args.noteworthyPeople, staffMember.person);
+		const isAccented: boolean = !!findPersonByValue(args.accentedPeople, staffMember.person);
+		const isNoteworthy: boolean = !!findPersonByValue(
+			args.noteworthyPeople,
+			staffMember.person,
+		);
 
 		// Generate a multi-line label for the person, prefixed with an exclamation to have it
 		// interpreted as [HTML-like](https://graphviz.org/doc/info/shapes.html#html).
-		const labelLines = [staffMember.person.name, staffMember.person.title ?? 'Title?'];
+		const labelLines: string[] = [
+			staffMember.person.name,
+			staffMember.person.title ?? 'Title?',
+		];
 		if (staffMember.person.specialties?.length) {
 			labelLines.push(`(${staffMember.person.specialties.join(', ')})`);
 		}
 
-		let href = staffMember.person.url;
+		let href: string | undefined = staffMember.person.url;
 		if (!href && staffMember.person.urls?.length) {
-			href = staffMember.person.urls[0].url;
+			href = staffMember.person.urls[0]?.url;
 		}
 
 		const nodeAttributes = {
@@ -296,7 +330,7 @@ function addStaffNodes(args, staff, graph) {
 			style: 'filled,rounded',
 			width: dimensions.node.widthInches,
 		};
-		const node = teamCluster.addNode(staffMember.person.name, nodeAttributes);
+		const node: graphviz.Node = teamCluster.addNode(staffMember.person.name, nodeAttributes);
 
 		staffNodes.set(staffMember.person.name, node);
 
@@ -306,63 +340,50 @@ function addStaffNodes(args, staff, graph) {
 	return staffNodes;
 }
 
-/**
- * @param {Required<GenerateOrgChartParams>} args
- * @param {StaffMember[]} staff
- * @param {graphviz.Graph} graph
- * @param {Map<string, graphviz.Node>} staffNodes
- * @returns {void}
- */
-function addStaffEdges(args, staff, graph, staffNodes) {
-	traverseStaff(staff, (staffMember, _hierarchy) => {
+function addStaffEdges(
+	_args: Required<GenerateOrgChartParams>,
+	staff: StaffMember[],
+	graph: graphviz.Graph,
+	staffNodes: Map<string, graphviz.Node>,
+): void {
+	traverseStaff(staff, (staffMember: StaffMember, _hierarchy: readonly StaffMember[]): true => {
 		if (staffMember.staff?.length) {
-			const node1 = staffNodes.get(staffMember.person.name);
+			const node1: graphviz.Node | undefined = staffNodes.get(staffMember.person.name);
 			if (!node1) throw new Error();
 
 			for (const subordinate of staffMember.staff) {
-				const node2 = staffNodes.get(subordinate.person.name);
+				const node2: graphviz.Node | undefined = staffNodes.get(subordinate.person.name);
 				if (!node2) throw new Error();
 
-				const _edge = graph.addEdge(node1, node2);
+				const _edge: graphviz.Edge = graph.addEdge(node1, node2);
 			}
 		}
 		return true;
 	});
 }
 
-/**
- * @param {Required<GenerateOrgChartParams>} args
- * @param {StaffMember[]} staff
- * @param {graphviz.Graph} graph
- * @returns {void}
- */
-function addRankClusters(args, staff, graph) {
-	/**
-	 * These are listed in order of priority from top to bottom.
-	 * @typedef {'source' | 'min' | 'same' | 'max' | 'sink'} Rank
-	 */
+function addRankClusters(
+	args: Required<GenerateOrgChartParams>,
+	staff: StaffMember[],
+	graph: graphviz.Graph,
+): void {
+	// These are listed in order of priority from top to bottom.
+	type Rank = 'source' | 'min' | 'same' | 'max' | 'sink';
 
-	/**
-	 * @param {string} parentName
-	 * @param {Rank} [rank = 'same']
-	 * @returns {graphviz.Graph}
-	 */
-	function createRankCluster(parentName, rank = 'same') {
-		const rankCluster = graph.addCluster(`${parentName} Staff`);
+	function createRankCluster(parentName: string, rank: Rank = 'same'): graphviz.Graph {
+		const rankCluster: graphviz.Graph = graph.addCluster(`${parentName} Staff`);
 		if (rank) {
 			rankCluster.set('rank', rank);
 		}
 		return rankCluster;
 	}
 
-	/**
-	 * @param {string} parentName
-	 * @param {StaffMember[] | undefined} staff
-	 * @param {Rank} [rank = 'same']
-	 * @returns {graphviz.Graph | undefined}
-	 */
-	function createAndPopulateRankClusterIfNecessary(parentName, staff, rank) {
-		let rankCluster;
+	function createAndPopulateRankClusterIfNecessary(
+		parentName: string,
+		staff: StaffMember[] | undefined,
+		rank: Rank = 'same',
+	): graphviz.Graph | undefined {
+		let rankCluster: graphviz.Graph | undefined;
 		if (staff && staff.length > 1) {
 			rankCluster = createRankCluster(parentName, rank);
 			for (const staffMember of staff) {
@@ -373,66 +394,66 @@ function addRankClusters(args, staff, graph) {
 	}
 
 	if (args.organization.orgChartJustification === 'roots') {
-		const _rootRankCluster = createAndPopulateRankClusterIfNecessary(
-			`${args.organization.orgName} Root`,
-			staff.filter((staffMember) => !!staffMember.staff),
-			'source',
+		const _rootRankCluster: graphviz.Graph | undefined =
+			createAndPopulateRankClusterIfNecessary(
+				`${args.organization.orgName} Root`,
+				staff.filter((staffMember) => !!staffMember.staff),
+				'source',
+			);
+
+		traverseStaff(
+			staff,
+			(staffMember: StaffMember, _hierarchy: readonly StaffMember[]): true => {
+				createAndPopulateRankClusterIfNecessary(staffMember.person.name, staffMember.staff);
+				return true;
+			},
+		);
+	} else if (args.organization.orgChartJustification === 'leaves') {
+		const leafRankCluster: graphviz.Graph = createRankCluster(
+			`${args.organization.orgName} Leaf`,
+			'sink',
 		);
 
-		traverseStaff(staff, (staffMember, _hierarchy) => {
-			createAndPopulateRankClusterIfNecessary(staffMember.person.name, staffMember.staff);
-			return true;
-		});
-	} else if (args.organization.orgChartJustification === 'leaves') {
-		const leafRankCluster = createRankCluster(`${args.organization.orgName} Leaf`, 'sink');
-
-		traverseStaff(staff, (staffMember, _hierarchy) => {
-			if (!staffMember.staff) {
-				leafRankCluster.addNode(staffMember.person.name);
-			}
-			return true;
-		});
+		traverseStaff(
+			staff,
+			(staffMember: StaffMember, _hierarchy: readonly StaffMember[]): true => {
+				if (!staffMember.staff) {
+					leafRankCluster.addNode(staffMember.person.name);
+				}
+				return true;
+			},
+		);
 	}
 }
 
-/**
- *
- * @param {StaffMember[] | undefined} staff
- * @param {Person[]} accentedPeople
- * @param {Person[]} noteworthyPeople
- * @returns {StaffMember[] | undefined}
- */
-function pruneStaff(staff, accentedPeople, noteworthyPeople) {
+function pruneStaff(
+	staff: StaffMember[] | undefined,
+	accentedPeople: Person[],
+	noteworthyPeople: Person[],
+): StaffMember[] | undefined {
 	return traverseStaff(
 		staff,
-		(staffMember, _hierarchy) =>
+		(staffMember: StaffMember, _hierarchy: readonly StaffMember[]): boolean =>
 			!!findPersonByValue(accentedPeople, staffMember.person) ||
 			!!findPersonByValue(noteworthyPeople, staffMember.person),
 	);
 }
 
-/**
- * @typedef {(staffMember: StaffMember, hierarchy: readonly StaffMember[]) => boolean} StaffMemberVisitor
- */
+type StaffMemberVisitor = (staffMember: StaffMember, hierarchy: readonly StaffMember[]) => boolean;
 
-/**
- * @param {StaffMember[] | undefined} staff
- * @param {StaffMemberVisitor} visitStaffMember
- * @returns {StaffMember[] | undefined}
- */
-function traverseStaff(staff, visitStaffMember) {
-	/**
-	 * @param {StaffMember[] | undefined} oldStaff
-	 * @param {StaffMember[]} hierarchy
-	 * @returns {StaffMember[] | undefined}
-	 */
-	function recurseStaff(oldStaff, hierarchy) {
-		/** @type {StaffMember[] | undefined} */
-		let newStaff;
+function traverseStaff(
+	staff: StaffMember[] | undefined,
+	visitStaffMember: StaffMemberVisitor,
+): StaffMember[] | undefined {
+	function recurseStaff(
+		oldStaff: StaffMember[] | undefined,
+		hierarchy: StaffMember[],
+	): StaffMember[] | undefined {
+		let newStaff: StaffMember[] | undefined;
 		if (oldStaff) {
 			for (const oldStaffMember of oldStaff) {
 				hierarchy.push(oldStaffMember);
-				const newStaffMember = {
+				const newStaffMember: StaffMember = {
 					...oldStaffMember,
 					staff: recurseStaff(oldStaffMember.staff, hierarchy),
 				};
@@ -451,12 +472,7 @@ function traverseStaff(staff, visitStaffMember) {
 	return recurseStaff(staff, []);
 }
 
-/**
- * @param {Person[]} people
- * @param {Person} person
- * @returns {Person | undefined}
- */
-function findPersonByValue(people, person) {
+function findPersonByValue(people: Person[], person: Person): Person | undefined {
 	// Person.name and Person.team are the only two required properties.
 	return people.find((p) => p.name === person.name && p.team === person.team);
 }

@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env npx ts-node
 
 import { JsonSchemaTarget } from 'dex';
 import * as fs from 'fs';
