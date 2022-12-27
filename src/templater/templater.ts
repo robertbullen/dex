@@ -85,22 +85,22 @@ export class Templater extends Docxtemplater {
 	 */
 	public replaceImage(replacementImage: ReplacementImage): void {
 		// TODO: Cache MD5 hashes to improve performance.
-		const imageKey = Enumerable.from(this.getZip().files)
+		const imageKey: string | number = Enumerable.from(this.getZip().files)
 			.where(
-				(entry) =>
-					entry.value.name.startsWith('ppt/media/') &&
+				({ value }: { value: PizZip.ZipObject }): boolean =>
+					value.name.startsWith('ppt/media/') &&
 					(!replacementImage.oldImageExtension ||
-						entry.value.name.endsWith(replacementImage.oldImageExtension)),
+						value.name.endsWith(replacementImage.oldImageExtension)),
 			)
-			.first((entry) => {
-				const md5 = crypto
+			.first(({ value }: { value: PizZip.ZipObject }): boolean => {
+				const md5: string = crypto
 					.createHash('md5')
-					.update(entry.value.asNodeBuffer())
+					.update(value.asNodeBuffer())
 					.digest('hex');
 				return md5 === replacementImage.oldImageMd5;
 			}).key;
 
-		this.getZip().file(imageKey, replacementImage.newImageBuffer);
+		this.getZip().file(imageKey.toString(), replacementImage.newImageBuffer);
 	}
 
 	public replaceImages(replacementImages: ReplacementImage[]): void {
