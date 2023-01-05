@@ -3,6 +3,7 @@
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import dayjs from 'dayjs';
+import { DataModel } from 'dex';
 import filenamify from 'filenamify';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
@@ -35,9 +36,9 @@ async function main(): Promise<void> {
 		loadDataFromFileSystem(args.dataPath),
 	]);
 
-	const data = /** @type {DataModelType} */ customer;
-	data.gigamon = gigamon;
+	const data = customer as DataModel;
 
+	data.gigamon = gigamon;
 	data.meeting.date = args.meetingDate;
 
 	// Validate the data.
@@ -179,21 +180,21 @@ async function parseArguments() {
 				describe:
 					'The date when the meeting will take place, specified in yyyy-mm-dd format.',
 				group: 'Interactive Arguments',
-				prompt: /** @type {'if-no-arg'} */ 'if-no-arg',
+				prompt: 'if-no-arg' as const,
 				type: 'string',
 			},
 			// 'password': {
 			// 	alias: 'p',
 			// 	describe: 'The password to use when logging into Salesforce.',
 			// 	group: 'Interactive Arguments',
-			// 	prompt: /** @type {'if-empty'} */ ('if-empty'),
+			// 	prompt: 'if-empty' as const,
 			// 	type: 'password',
 			// },
 			// 'username': {
 			// 	alias: 'u',
 			// 	describe: 'The username to use when logging into Salesforce.',
 			// 	group: 'Interactive Arguments',
-			// 	prompt: /** @type {'if-empty'} */ ('if-empty'),
+			// 	prompt: 'if-empty' as const,
 			// 	type: 'string',
 			// },
 
