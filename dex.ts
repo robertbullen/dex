@@ -176,9 +176,9 @@ async function parseArguments() {
 			},
 			'meeting-date': {
 				// alias: 'm',
-				default: dayjs().format('YYYY-MM-DD'),
+				default: 'today',
 				describe:
-					'The date when the meeting will take place, specified in yyyy-mm-dd format.',
+					"The date when the meeting will take place, specified as 'today', 'tomorrow', or in 'yyyy-mm-dd' format.",
 				group: 'Interactive Arguments',
 				prompt: 'if-no-arg' as const,
 				type: 'string',
@@ -247,6 +247,16 @@ async function parseArguments() {
 	if (args.m) {
 		throw new Error('Argument `-m` is not supported; use `--meeting-date` instead');
 	}
+
+	// yargs-interactive also doesn't automatically create camel case properties, so use
+	// `meeting-date` as input and then make `meetingDate` consistent.
+	let meetingDate: string = args['meeting-date'];
+	if (meetingDate === 'today') {
+		meetingDate = dayjs().format('YYYY-MM-DD');
+	} else if (meetingDate === 'tomorrow') {
+		meetingDate = dayjs().add(1, 'day').format('YYYY-MM-DD');
+	}
+	args.meetingDate = args['meeting-date'] = meetingDate;
 
 	return args;
 }
