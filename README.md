@@ -2,16 +2,16 @@
 
 This project implements a proof-of-concept for dynamically populating PowerPoint templates with data. Think of it sort of like [Handlebars](https://handlebarsjs.com/) for PowerPoint.
 
--   [dex](#dex)
-    -   [Initialization](#initialization)
-        -   [TL;DR](#tldr)
-        -   [Details](#details)
-            -   [macOS System Dependencies](#macos-system-dependencies)
-            -   [JavaScript Packages](#javascript-packages)
-            -   [Visual Studio Code Extensions](#visual-studio-code-extensions)
-    -   [Usage](#usage)
-        -   [Example](#example)
-    -   [Educational Links](#educational-links)
+- [dex](#dex)
+  - [Initialization](#initialization)
+    - [TL;DR](#tldr)
+    - [Details](#details)
+      - [macOS System Dependencies](#macos-system-dependencies)
+      - [JavaScript Packages](#javascript-packages)
+      - [Visual Studio Code Extensions](#visual-studio-code-extensions)
+  - [Usage](#usage)
+    - [Example](#example)
+  - [Educational Links](#educational-links)
 
 ## Initialization
 
@@ -61,12 +61,13 @@ yarn build
 Subsequent invocations can invoke the script directly:
 
 ```plaintext
-Usage: dex.mjs -t=<path/to/template.pptx> -d=<path/to/data.yaml>
+Usage: dex.ts -t=<path/to/template.pptx> -d=<path/to/data.yaml>
 -o=<path/to/output/dir/> [-m=<yyyy-mm-dd>] [-r]  [-s]
 
 Interactive Arguments
-  --meeting-date, -m  The date when the meeting will take place, specified in
-                      yyyy-mm-dd format.                                [string]
+  --meeting-date  The date when the meeting will take place, specified as
+                  'today', 'tomorrow', or in 'yyyy-mm-dd' format.
+                                                     [string] [default: "today"]
 
 Noninteractive Arguments
   --data-path, -d        File or directory path containing the customer data to
@@ -93,7 +94,7 @@ Options:
 ### Example
 
 ```bash
-./dex.mjs --template-file=template.pptx --data-path=data.yaml --output-dir=output --review
+./dex.ts --template-file=template.pptx --data-path=data.yaml --output-dir=output --review
 ```
 
 ## Educational Links
