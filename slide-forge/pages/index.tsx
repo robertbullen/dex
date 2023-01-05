@@ -1,3 +1,1 @@
-export default function Home() {
-	return <p>Hello Index!</p>;
-}
+export { default } from './home';

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NextRouter, useRouter } from 'next/router';
 import {
 	Nav,
 	Navbar,
@@ -10,22 +11,32 @@ import {
 } from 'reactstrap';
 
 export function Header() {
+	const router: NextRouter = useRouter();
+
 	return (
 		<header>
 			<Navbar color="dark" container dark expand="md">
 				<NavbarBrand href="/" tag={Link}>
-					SlideForge
+					Slide Forge
 				</NavbarBrand>
 				<NavbarToggler id="toggler" />
 				<UncontrolledCollapse navbar toggler="#toggler">
 					<Nav navbar>
 						<NavItem>
-							<NavLink href="/templates/" tag={Link}>
+							<NavLink
+								active={router.pathname.startsWith('/templates')}
+								href="/templates"
+								tag={Link}
+							>
 								Templates
 							</NavLink>
 						</NavItem>
 						<NavItem>
-							<NavLink href="/decks/" tag={Link}>
+							<NavLink
+								active={router.pathname.startsWith('/slide-decks')}
+								href="/slide-decks"
+								tag={Link}
+							>
 								Slide Decks
 							</NavLink>
 						</NavItem>

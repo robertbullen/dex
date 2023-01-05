@@ -1,0 +1,32 @@
+.stack {
+	display: flex;
+	flex-direction: column;
+}
+
+.stack .stack-item {
+	margin-bottom: 0.75rem;
+	margin-top: 0.75rem;
+}
+
+.stack.stack-sm .stack-item {
+	margin-bottom: 0.25rem;
+	margin-top: 0.25rem;
+}
+
+.stack.stack-lg .stack-item {
+	margin-bottom: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+.stack .stack-item:first-child {
+	margin-top: 0;
+}
+
+.stack .stack-item:last-child {
+	margin-bottom: 0;
+}
+
+.stack .stack-item > * {
+	margin-bottom: 0 !important;
+	margin-top: 0 !important;
+}

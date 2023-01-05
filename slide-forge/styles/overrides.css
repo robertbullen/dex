@@ -1,0 +1,12 @@
+label.form-label {
+	font-weight: 600 !important;
+	margin-bottom: 0.25rem !important;
+}
+
+.nav.nav-tabs .nav-item {
+	cursor: pointer !important;
+}
+
+ul.pagination {
+	margin-bottom: 0 !important;
+}
