@@ -61,7 +61,7 @@ describe(whereFilter, () => {
 			[helpers.arrays.ofKeyedObjects, `true`, helpers.arrays.ofKeyedObjects],
 			[
 				helpers.arrays.ofKeyedObjects,
-				`key1 === ${helpers.arrays.ofKeyedObjects[0].key1}`,
+				`key1 === ${helpers.arrays.ofKeyedObjects[0]?.key1}`,
 				[helpers.arrays.ofKeyedObjects[0]],
 			],
 			[
